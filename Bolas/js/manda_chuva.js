@@ -1,12 +1,48 @@
 var camera1,camera2,camera3, cam,scene, renderer;
 var aquarium;
 var geometry, material, mesh;
+var ball = [];
+
+function randomRange(start, stop) {
+    return Math.random() * (stop - start) + start; 
+} 
+
+function randomPos() {
+    return [randomRange(-100+20.7, 100-20.7),randomRange(-50+20.7, 50-20.7)];
+} 
+
+// funcao que retorna -1 se estiver a colidir com uma parede
+                    // 1 se estiver a colidir com uma bola
+                    // 0 se nao estiver a colidir com nada
+function validPos(x,z){   
+    for(let i = 0;i<ball.length;i++){
+        if(checkBallsCollision(x,y,ball[i].position.x,ball[i].position.z))
+            return 1;
+    }
+    if(checkWallsCollision(x,z))
+        return -1
+    
+    return 0;
+}
+
 
 function createScene() {
     'use strict';
     scene = new THREE.Scene();
     scene.add(new THREE.AxisHelper(20));
 
+    let xz = randomPos();
+    let y = 20.7;
+    let i;
+    let random;
+
+    //cria as 10 bolas em posicoes random NOTA: apos criar as bolas e necessario verificar se
+    for(i = -5;i<5;i++){                       //estao em colisao, se estiverem chama-se a funcao de tratamento de colisoes
+        xz = randomPos();
+                            //y e a altura
+        ball[i] = new Ball(xz[0],y,xz[1]);
+        scene.add(ball[i]);
+    }
     aquarium = new Aquarium(0,0,0);
     scene.add( aquarium );
     
@@ -20,8 +56,8 @@ function createCameras() {
 
     camera1 = new THREE.OrthographicCamera(-aspectRatio*viewSize/2, aspectRatio*viewSize/2,viewSize/2,-viewSize/2, -500,500);
     camera1.position.x = 0;
-    camera1.position.y = 0;
-    camera1.position.z = 90;
+    camera1.position.y = 90;
+    camera1.position.z = 0;
     camera1.lookAt(scene.position);
     
     camera2 = new THREE.PerspectiveCamera(90, 1.5, 4, 450);

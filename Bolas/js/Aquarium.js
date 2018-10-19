@@ -40,3 +40,6 @@ function addWallFrontBack(obj,x,y,z){
     obj.add(mesh);
 }
 
+function checkWallsCollision(x,z){
+    
+}
